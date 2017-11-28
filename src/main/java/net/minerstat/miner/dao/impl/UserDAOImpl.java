@@ -9,6 +9,7 @@ import java.util.List;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -47,6 +48,13 @@ public class UserDAOImpl implements UserDao {
     @Override
     public User getUser(int uid) {
         return em.find(User.class, uid);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        Query query = em.createQuery("SELECT u FROM User u WHERE email = :email");
+        query.setParameter("email", email);
+        return (User) query.getSingleResult();
     }
 
     public List<User> findAll() {

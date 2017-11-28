@@ -98,6 +98,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
       .authorizeRequests()
       .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
       .antMatchers(HttpMethod.POST, "/api/v1/user").permitAll()
+      .antMatchers("/v1/worker/**").permitAll()
       .antMatchers( "/v1/user/**").authenticated()
       .anyRequest().authenticated().and()
       .addFilterBefore(new TokenAuthenticationFilter(tokenHelper, userDetailsService), BasicAuthenticationFilter.class);
@@ -112,7 +113,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     // TokenAuthenticationFilter will ignore the below paths
     web.ignoring().antMatchers(
             HttpMethod.POST,
-            "/api/v1/user/login"
+            "/api/v1/user/login",
+            "/api/v1/worker/**"
     );
     web.ignoring().antMatchers(
             HttpMethod.GET,

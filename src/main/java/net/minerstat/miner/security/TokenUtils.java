@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import org.bouncycastle.jcajce.provider.digest.SHA3;
+import org.bouncycastle.util.encoders.Hex;
 
 @Component
 public class TokenUtils {
@@ -98,6 +101,14 @@ public class TokenUtils {
     return expiration.before(this.generateCurrentDate());
   }
 
+  /**
+   * Create new token for concrete user.
+   *
+   * @param userDetails
+   *   User information object.
+   *
+   * @return String
+   */
   public String generateToken(UserDetails userDetails) {
     Map<String, Object> claims = new HashMap<String, Object>();
     claims.put("sub", userDetails.getUsername());
@@ -112,6 +123,18 @@ public class TokenUtils {
       .setExpiration(this.generateExpirationDate())
       .signWith(SignatureAlgorithm.HS512, this.secret)
       .compact();
+  }
+
+  /**
+   * Generating new token for worker.
+   *
+   * @return String
+   */
+  public String generateTokenWorker() {
+    String input = UUID.randomUUID().toString();
+    SHA3.DigestSHA3 digestSHA3 = new SHA3.Digest256();
+    byte[] digest = digestSHA3.digest(input.getBytes());
+    return Hex.toHexString(digest);
   }
 
   public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) {

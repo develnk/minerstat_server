@@ -82,6 +82,7 @@ public class UserController {
         return ResponseEntity.ok(createdUser);
     }
 
+    // Update user.
     @RequestMapping(value = "{uid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @PreAuthorize("(hasAuthority('Authenticated') AND isAuthenticated() AND @UP.uidIsCurrentUser(#uid)) OR hasAuthority('Administrator')")
     public @ResponseBody boolean updateUser(@RequestBody User user, @PathVariable String uid) {
@@ -118,6 +119,7 @@ public class UserController {
         return true;
     }
 
+    // Retrieve user.
     @RequestMapping(value = "{uid}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @PreAuthorize("(hasAuthority('Authenticated') AND isAuthenticated() AND @UP.uidIsCurrentUser(#uid)) OR hasAuthority('Administrator')")
     public ResponseEntity<User> getUser(@PathVariable String uid) {
@@ -125,11 +127,13 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    // Delete user.
     @RequestMapping(value="{uid}", method=RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody boolean removeEmp(@PathVariable String uid) {
         return userService.delete(Long.valueOf(uid));
     }
 
+    // User authorization.
     @RequestMapping(value="login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> authenticationRequest(@RequestBody AuthenticationRequest authenticationRequest) throws AuthenticationException {
         // Perform the authentication

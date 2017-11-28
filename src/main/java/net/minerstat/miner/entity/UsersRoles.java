@@ -11,6 +11,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users_roles")
 public class UsersRoles implements GrantedAuthority {
+
     @Id
     @Column(name="id", nullable=false, insertable=false, updatable=false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
