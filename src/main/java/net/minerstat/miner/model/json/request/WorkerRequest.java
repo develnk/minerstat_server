@@ -8,11 +8,14 @@ public class WorkerRequest extends AuthenticationRequest {
 
     private MinerTypes minerType;
 
+    private String rigId;
+
     public WorkerRequest() {}
 
-    public WorkerRequest(String name, String password, Integer minerType) {
+    public WorkerRequest(String name, String password, Integer minerType, String rigId) {
         super(name, password);
         setMinerType(minerType);
+        setRigId(rigId);
     }
 
     public MinerTypes getMinerType() {
@@ -21,5 +24,13 @@ public class WorkerRequest extends AuthenticationRequest {
 
     private void setMinerType(Integer minerType) {
         this.minerType = MinerTypes.setValue(minerType);
+    }
+
+    public String getRigId() {
+        return rigId;
+    }
+
+    public void setRigId(String rigId) {
+        this.rigId = rigId;
     }
 }

@@ -1,10 +1,9 @@
 package net.minerstat.miner.service.impl;
 
 import net.minerstat.miner.dao.WorkerRepository;
-import net.minerstat.miner.entity.User;
-import net.minerstat.miner.entity.Worker;
-import net.minerstat.miner.entity.WorkerPools;
-import net.minerstat.miner.entity.WorkerStat;
+import net.minerstat.miner.dao.impl.RoleDAOImpl;
+import net.minerstat.miner.dao.impl.UserRigDAOImpl;
+import net.minerstat.miner.entity.*;
 import net.minerstat.miner.security.TokenUtils;
 import net.minerstat.miner.service.WorkerService;
 import net.minerstat.miner.enums.*;
@@ -34,15 +33,23 @@ public class WorkerServiceImpl implements WorkerService {
     @Autowired
     private WorkerRepository workerRepository;
 
+    @Autowired
+    private RoleDAOImpl roleDAO;
+
+    @Autowired
+    private UserRigDAOImpl userRigDAO;
+
     @Override
-    public Worker newWorker(String email, String password, MinerTypes minerType) {
+    public Worker newWorker(String email, String password, MinerTypes minerType, String rigId) {
         User user = userService.findByEmail(email);
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(), password)
         );
 
+        UserRig userRig = userRigDAO.findByRigId(rigId);
+
         Worker newWorker = new Worker();
-        newWorker.setUid(user.getUid());
+        newWorker.setUserRig(userRig);
         newWorker.setWorkerId(UUID.randomUUID().toString());
         newWorker.setToken(tokenUtils.generateTokenWorker());
         newWorker.setMinerType(minerType.value);

@@ -12,7 +12,7 @@ import javax.persistence.PersistenceContext;
 import java.util.Date;
 
 @Repository("workerDao")
-public class WorkerDaoImpl {
+public class WorkerDAOImpl {
 
     @PersistenceContext
     private EntityManager em;

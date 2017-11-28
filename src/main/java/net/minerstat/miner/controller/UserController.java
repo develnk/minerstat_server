@@ -1,15 +1,12 @@
 package net.minerstat.miner.controller;
 
 import net.minerstat.miner.dao.UserRepository;
-import net.minerstat.miner.dao.impl.RoleDaoImpl;
-import net.minerstat.miner.entity.Role;
+import net.minerstat.miner.dao.impl.RoleDAOImpl;
 import net.minerstat.miner.entity.User;
 import net.minerstat.miner.entity.UsersRoles;
 import net.minerstat.miner.model.json.request.AuthenticationRequest;
 import net.minerstat.miner.model.json.response.AuthenticationResponse;
-import net.minerstat.miner.model.security.SecurityUser;
 import net.minerstat.miner.security.TokenUtils;
-import net.minerstat.miner.security.auth.UserPermissions;
 import net.minerstat.miner.service.impl.UserServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +34,7 @@ import java.util.*;
 public class UserController {
 
     @Autowired
-    private RoleDaoImpl roleDao;
+    private RoleDAOImpl roleDao;
 
     @Autowired
     private UserServiceImpl userService;

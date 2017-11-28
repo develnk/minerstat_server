@@ -99,6 +99,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
       .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
       .antMatchers(HttpMethod.POST, "/api/v1/user").permitAll()
       .antMatchers("/v1/worker/**").permitAll()
+      .antMatchers("/v1/rig/**").permitAll()
       .antMatchers( "/v1/user/**").authenticated()
       .anyRequest().authenticated().and()
       .addFilterBefore(new TokenAuthenticationFilter(tokenHelper, userDetailsService), BasicAuthenticationFilter.class);
@@ -114,7 +115,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     web.ignoring().antMatchers(
             HttpMethod.POST,
             "/api/v1/user/login",
-            "/api/v1/worker/**"
+            "/api/v1/worker/**",
+            "/api/v1/rig/**"
     );
     web.ignoring().antMatchers(
             HttpMethod.GET,

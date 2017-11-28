@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository("roleDao")
-public class RoleDaoImpl {
+public class RoleDAOImpl {
 
     @Autowired
     private RoleRepository roleRepository;

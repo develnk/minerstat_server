@@ -21,10 +21,6 @@ public class Worker implements Serializable {
     @JsonIgnore
     private Long id;
 
-    @JsonIgnore
-    @Column(name="uid", nullable = false)
-    private Long uid;
-
     @Column(name = "worker_id", length=64, nullable = false, unique=true)
     private String workerId;
 
@@ -43,18 +39,25 @@ public class Worker implements Serializable {
     @OnDelete(action= OnDeleteAction.CASCADE)
     private WorkerStat workerStat;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "worker_stat_detail_id")
+    @OnDelete(action= OnDeleteAction.CASCADE)
+    private WorkerStatDetail workerStatDetail;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "worker_stat_detail_gpu_id")
+    @OnDelete(action= OnDeleteAction.CASCADE)
+    private WorkerStatDetailGPU workerStatDetailGPU;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_rig_id")
+    @OnDelete(action= OnDeleteAction.CASCADE)
+    private UserRig userRig;
+
     public Worker() {}
 
     Worker(Long id) {
         this.setId(id);
-    }
-
-    public Long getUid() {
-        return uid;
-    }
-
-    public void setUid(Long uid) {
-        this.uid = uid;
     }
 
     public String getWorkerId() {
@@ -103,5 +106,29 @@ public class Worker implements Serializable {
 
     public void setWorkerStat(WorkerStat workerStat) {
         this.workerStat = workerStat;
+    }
+
+    public WorkerStatDetail getWorkerStatDetail() {
+        return workerStatDetail;
+    }
+
+    public void setWorkerStatDetail(WorkerStatDetail workerStatDetail) {
+        this.workerStatDetail = workerStatDetail;
+    }
+
+    public UserRig getUserRig() {
+        return userRig;
+    }
+
+    public void setUserRig(UserRig userRig) {
+        this.userRig = userRig;
+    }
+
+    public WorkerStatDetailGPU getWorkerStatDetailGPU() {
+        return workerStatDetailGPU;
+    }
+
+    public void setWorkerStatDetailGPU(WorkerStatDetailGPU workerStatDetailGPU) {
+        this.workerStatDetailGPU = workerStatDetailGPU;
     }
 }
