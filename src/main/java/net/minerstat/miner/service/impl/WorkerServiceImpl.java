@@ -2,20 +2,24 @@ package net.minerstat.miner.service.impl;
 
 import net.minerstat.miner.dao.WorkerRepository;
 import net.minerstat.miner.dao.impl.RoleDAOImpl;
-import net.minerstat.miner.dao.impl.UserRigDAOImpl;
+import net.minerstat.miner.dao.impl.UsersRigDAOImpl;
+import net.minerstat.miner.dao.impl.WorkerDAOImpl;
 import net.minerstat.miner.entity.*;
+import net.minerstat.miner.enums.MinerTypes;
+import net.minerstat.miner.model.json.request.WorkerRequest;
+import net.minerstat.miner.model.json.request.WorkerStatRequest;
 import net.minerstat.miner.security.TokenUtils;
 import net.minerstat.miner.service.WorkerService;
-import net.minerstat.miner.enums.*;
+import net.minerstat.miner.service.statitistic.AbstractFactory;
+import net.minerstat.miner.service.statitistic.Algorithm;
+import net.minerstat.miner.service.statitistic.MinerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.UUID;
 
 @Service("WorkerService")
@@ -37,22 +41,21 @@ public class WorkerServiceImpl implements WorkerService {
     private RoleDAOImpl roleDAO;
 
     @Autowired
-    private UserRigDAOImpl userRigDAO;
+    private UsersRigDAOImpl usersRigDAO;
+
+    @Autowired
+    private WorkerDAOImpl workerDAO;
 
     @Override
-    public Worker newWorker(String email, String password, MinerTypes minerType, String rigId) {
-        User user = userService.findByEmail(email);
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), password)
-        );
-
-        UserRig userRig = userRigDAO.findByRigId(rigId);
+    public Worker newWorker(WorkerRequest workerRequest) {
+        checkUserCredential(workerRequest.getName(), workerRequest.getPassword());
+        UsersRig userRig = usersRigDAO.findByRigId(workerRequest.getRigId());
 
         Worker newWorker = new Worker();
-        newWorker.setUserRig(userRig);
+        newWorker.setUsersRig(userRig);
         newWorker.setWorkerId(UUID.randomUUID().toString());
         newWorker.setToken(tokenUtils.generateTokenWorker());
-        newWorker.setMinerType(minerType.value);
+        newWorker.setMinerType(workerRequest.getMinerType().value);
         workerRepository.save(newWorker);
 
 //        List<WorkerPools> workerPools = new ArrayList<>();
@@ -70,4 +73,41 @@ public class WorkerServiceImpl implements WorkerService {
 
         return newWorker;
     }
+
+    @Override
+    public Boolean saveStat(WorkerStatRequest workerStatRequest) {
+        Worker worker = getWorkerByToken(workerStatRequest.getToken());
+        MinerTypes minerType = MinerTypes.setValue(worker.getMinerType());
+        AbstractFactory factoryMiner = new MinerFactory();
+        Algorithm algorithm = factoryMiner.getMiner(minerType);
+        algorithm.parseAlgorithm(workerStatRequest.getLogs());
+        return true;
+    }
+
+    private void checkUserCredential(String userName, String passwd)  throws AuthenticationException {
+        User user = userService.findByEmail(userName);
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getUsername(), passwd)
+        );
+    }
+
+    private User getUserByWorkerToken(String token) throws AuthenticationException {
+        User user = workerDAO.getUserByWorkerToken(token);
+        if (user == null) {
+            throw new BadCredentialsException("Invalid Worker Token");
+        }
+
+        return user;
+    }
+
+    private Worker getWorkerByToken(String token) {
+        Worker worker = workerDAO.getWorkerByToken(token);
+        if (worker == null) {
+            throw new BadCredentialsException("Invalid Worker Token");
+        }
+
+        return worker;
+    }
+
+
 }

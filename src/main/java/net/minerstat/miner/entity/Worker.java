@@ -8,7 +8,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "workers")
@@ -52,7 +51,7 @@ public class Worker implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_rig_id")
     @OnDelete(action= OnDeleteAction.CASCADE)
-    private UserRig userRig;
+    private UsersRig usersRig;
 
     public Worker() {}
 
@@ -116,12 +115,12 @@ public class Worker implements Serializable {
         this.workerStatDetail = workerStatDetail;
     }
 
-    public UserRig getUserRig() {
-        return userRig;
+    public UsersRig getUsersRig() {
+        return usersRig;
     }
 
-    public void setUserRig(UserRig userRig) {
-        this.userRig = userRig;
+    public void setUsersRig(UsersRig usersRig) {
+        this.usersRig = usersRig;
     }
 
     public WorkerStatDetailGPU getWorkerStatDetailGPU() {

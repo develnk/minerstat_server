@@ -7,8 +7,8 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user_rig")
-public class UserRig {
+@Table(name = "users_rig")
+public class UsersRig {
 
     @Id
     @Column(name="id", nullable=false, insertable=false, updatable=false)
@@ -19,24 +19,17 @@ public class UserRig {
     @Column(name = "rig_id", length=64, nullable = false, unique=true)
     private String rigId;
 
-    @JsonIgnore
-    @Column(name="uid", nullable = false)
-    private Long uid;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "workers_id")
     @OnDelete(action= OnDeleteAction.CASCADE)
     private Worker worker;
 
-    public UserRig() {}
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "uid")
+    @OnDelete(action= OnDeleteAction.CASCADE)
+    private User user;
 
-    public Long getUid() {
-        return uid;
-    }
-
-    public void setUid(Long uid) {
-        this.uid = uid;
-    }
+    public UsersRig() {}
 
     public String getRigId() {
         return rigId;
@@ -52,5 +45,17 @@ public class UserRig {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Worker getWorker() {
+        return worker;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

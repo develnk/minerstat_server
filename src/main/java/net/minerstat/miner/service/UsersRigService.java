@@ -1,17 +1,16 @@
-package net.minerstat.miner.service.impl;
+package net.minerstat.miner.service;
 
-import net.minerstat.miner.dao.impl.UserRigDAOImpl;
+import net.minerstat.miner.dao.impl.UsersRigDAOImpl;
 import net.minerstat.miner.entity.User;
-import net.minerstat.miner.entity.UserRig;
+import net.minerstat.miner.entity.UsersRig;
+import net.minerstat.miner.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@Service("UserRigService")
-public class UserRigServiceImpl {
+@Service("UsersRigService")
+public class UsersRigService {
 
     @Autowired
     private UserServiceImpl userService;
@@ -20,19 +19,19 @@ public class UserRigServiceImpl {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UserRigDAOImpl userRigDAO;
+    private UsersRigDAOImpl usersRigDAO;
 
 
-    public UserRig createUserRig(String email, String password, String rigId) {
+    public UsersRig createUserRig(String email, String password, String rigId) {
         User user = userService.findByEmail(email);
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(), password)
         );
 
-        UserRig userRig = new UserRig();
+        UsersRig userRig = new UsersRig();
         userRig.setRigId(rigId);
-        userRig.setUid(user.getUid());
-        userRigDAO.insertUserRig(userRig);
+        userRig.setUser(user);
+        usersRigDAO.insertUsersRig(userRig);
         return userRig;
     }
 

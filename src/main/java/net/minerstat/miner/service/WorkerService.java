@@ -1,10 +1,13 @@
 package net.minerstat.miner.service;
 
 import net.minerstat.miner.entity.Worker;
-import net.minerstat.miner.enums.MinerTypes;
+import net.minerstat.miner.model.json.request.WorkerRequest;
+import net.minerstat.miner.model.json.request.WorkerStatRequest;
 
 public interface WorkerService {
-    Worker newWorker(String email, String password,  MinerTypes minerType, String rigId);
 
+    Worker newWorker(WorkerRequest workerRequest);
+
+    Boolean saveStat(WorkerStatRequest workerStatRequest);
 
 }

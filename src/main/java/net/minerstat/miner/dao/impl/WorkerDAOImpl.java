@@ -1,6 +1,5 @@
 package net.minerstat.miner.dao.impl;
 
-import net.minerstat.miner.dao.RoleRepository;
 import net.minerstat.miner.dao.WorkerRepository;
 import net.minerstat.miner.entity.User;
 import net.minerstat.miner.entity.Worker;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Date;
 
 @Repository("workerDao")
 public class WorkerDAOImpl {
@@ -22,6 +20,15 @@ public class WorkerDAOImpl {
 
     public void insertWorker(Worker worker) {
         em.persist(worker);
+    }
+
+    public Worker getWorkerByToken(String token) {
+        return workerRepository.findByToken(token);
+    }
+
+    public User getUserByWorkerToken(String token) {
+        Worker worker = getWorkerByToken(token);
+        return worker.getUsersRig().getUser();
     }
 
 }
