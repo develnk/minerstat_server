@@ -1,5 +1,7 @@
 package net.minerstat.miner.model.json.request;
 
+import org.json.simple.JSONObject;
+
 public class WorkerStatRequest {
 
 	private static final long serialVersionUID = 6624726180748515607L;
@@ -7,16 +9,16 @@ public class WorkerStatRequest {
 	private String token;
 
 	// Json Serialized string.
-	private String logs;
+	private JSONObject logs;
 
 	public WorkerStatRequest() {}
 
 
-	public String getLogs() {
+	public JSONObject getLogs() {
 		return logs;
 	}
 
-	public void setLogs(String logs) {
+	public void setLogs(JSONObject logs) {
 		this.logs = logs;
 	}
 

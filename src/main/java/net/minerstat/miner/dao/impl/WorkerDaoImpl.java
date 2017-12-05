@@ -1,5 +1,6 @@
 package net.minerstat.miner.dao.impl;
 
+import net.minerstat.miner.dao.WorkerDao;
 import net.minerstat.miner.dao.WorkerRepository;
 import net.minerstat.miner.entity.User;
 import net.minerstat.miner.entity.Worker;
@@ -10,20 +11,17 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Repository("workerDao")
-public class WorkerDAOImpl {
-
-    @PersistenceContext
-    private EntityManager em;
+public class WorkerDaoImpl implements WorkerDao {
 
     @Autowired
     private WorkerRepository workerRepository;
 
-    public void insertWorker(Worker worker) {
-        em.persist(worker);
-    }
-
     public Worker getWorkerByToken(String token) {
         return workerRepository.findByToken(token);
+    }
+
+    public Worker saveWorker(Worker worker) {
+        return workerRepository.save(worker);
     }
 
     public User getUserByWorkerToken(String token) {

@@ -44,7 +44,7 @@ public class WorkerStatDetail {
     @OnDelete(action= OnDeleteAction.CASCADE)
     private Worker worker;
 
-    WorkerStatDetail() {}
+    public WorkerStatDetail() {}
 
     public Integer getOneHash() {
         return oneHash;

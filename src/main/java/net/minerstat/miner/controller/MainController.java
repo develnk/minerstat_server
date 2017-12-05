@@ -1,7 +1,7 @@
 package net.minerstat.miner.controller;
 
 import net.minerstat.miner.entity.User;
-import net.minerstat.miner.service.impl.UserServiceImpl;
+import net.minerstat.miner.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,7 @@ public class MainController {
     private static final String template = "{\"Text\":\"Hello, %s!\"}";
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/greeting")

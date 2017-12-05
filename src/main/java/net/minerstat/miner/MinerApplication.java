@@ -30,7 +30,6 @@ public class MinerApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(applicationClass, args);
-
     }
 
     @Override

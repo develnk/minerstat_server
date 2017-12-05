@@ -31,7 +31,12 @@ public class WorkerStatDetailGPU {
     @Column(name = "fan_speed")
     private Integer fanSpeed;
 
-    @OneToOne(mappedBy = "workerStatDetailGPU")
+    @Column(name = "worker_id", nullable = false)
+    private Long workerId;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "worker_id", referencedColumnName = "id", insertable = false, updatable = false)
     @OnDelete(action= OnDeleteAction.CASCADE)
     private Worker worker;
 
@@ -86,5 +91,13 @@ public class WorkerStatDetailGPU {
 
     public void setFanSpeed(Integer fanSpeed) {
         this.fanSpeed = fanSpeed;
+    }
+
+    public Long getWorkerId() {
+        return workerId;
+    }
+
+    public void setWorkerId(Long workerId) {
+        this.workerId = workerId;
     }
 }

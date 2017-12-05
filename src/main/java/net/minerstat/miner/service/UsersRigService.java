@@ -1,9 +1,8 @@
 package net.minerstat.miner.service;
 
-import net.minerstat.miner.dao.impl.UsersRigDAOImpl;
+import net.minerstat.miner.dao.UsersRigDao;
 import net.minerstat.miner.entity.User;
 import net.minerstat.miner.entity.UsersRig;
-import net.minerstat.miner.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,13 +12,13 @@ import org.springframework.stereotype.Service;
 public class UsersRigService {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UsersRigDAOImpl usersRigDAO;
+    private UsersRigDao usersRigDAO;
 
 
     public UsersRig createUserRig(String email, String password, String rigId) {

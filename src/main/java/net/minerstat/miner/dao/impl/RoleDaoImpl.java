@@ -1,5 +1,6 @@
 package net.minerstat.miner.dao.impl;
 
+import net.minerstat.miner.dao.RoleDao;
 import net.minerstat.miner.dao.RoleRepository;
 import net.minerstat.miner.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository("roleDao")
-public class RoleDAOImpl {
+public class RoleDaoImpl implements RoleDao {
 
     @Autowired
     private RoleRepository roleRepository;

@@ -1,18 +1,18 @@
 package net.minerstat.miner.service.impl;
 
-import net.minerstat.miner.dao.WorkerRepository;
-import net.minerstat.miner.dao.impl.RoleDAOImpl;
-import net.minerstat.miner.dao.impl.UsersRigDAOImpl;
-import net.minerstat.miner.dao.impl.WorkerDAOImpl;
+import net.minerstat.miner.dao.RoleDao;
+import net.minerstat.miner.dao.UsersRigDao;
+import net.minerstat.miner.dao.WorkerDao;
 import net.minerstat.miner.entity.*;
 import net.minerstat.miner.enums.MinerTypes;
 import net.minerstat.miner.model.json.request.WorkerRequest;
 import net.minerstat.miner.model.json.request.WorkerStatRequest;
 import net.minerstat.miner.security.TokenUtils;
+import net.minerstat.miner.service.UserService;
 import net.minerstat.miner.service.WorkerService;
-import net.minerstat.miner.service.statitistic.AbstractFactory;
-import net.minerstat.miner.service.statitistic.Algorithm;
-import net.minerstat.miner.service.statitistic.MinerFactory;
+import net.minerstat.miner.service.statistic.Factory;
+import net.minerstat.miner.service.statistic.Algorithm;
+import net.minerstat.miner.service.statistic.MinerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,7 +26,7 @@ import java.util.UUID;
 public class WorkerServiceImpl implements WorkerService {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -35,16 +35,16 @@ public class WorkerServiceImpl implements WorkerService {
     private TokenUtils tokenUtils;
 
     @Autowired
-    private WorkerRepository workerRepository;
+    private RoleDao roleDAO;
 
     @Autowired
-    private RoleDAOImpl roleDAO;
+    private UsersRigDao usersRigDAO;
 
     @Autowired
-    private UsersRigDAOImpl usersRigDAO;
+    private WorkerDao workerDAO;
 
     @Autowired
-    private WorkerDAOImpl workerDAO;
+    private Factory factoryMiner;
 
     @Override
     public Worker newWorker(WorkerRequest workerRequest) {
@@ -56,20 +56,20 @@ public class WorkerServiceImpl implements WorkerService {
         newWorker.setWorkerId(UUID.randomUUID().toString());
         newWorker.setToken(tokenUtils.generateTokenWorker());
         newWorker.setMinerType(workerRequest.getMinerType().value);
-        workerRepository.save(newWorker);
+        workerDAO.saveWorker(newWorker);
 
 //        List<WorkerPools> workerPools = new ArrayList<>();
 //        workerPools.add(new WorkerPools("http://ya.ru", newWorker.getWorkerId()));
 //        newWorker.setWorkerPools(workerPools);
-//        workerRepository.save(newWorker);
-//
+//        workerDAO.saveWorker(newWorker);
+
 //        WorkerStat workerStat = new WorkerStat();
 //        workerStat.setOneHash(324234);
 //        workerStat.setTwoHash(233434);
 //        workerStat.setDevAmount(4);
 //        workerStat.setUpTime(25);
 //        newWorker.setWorkerStat(workerStat);
-//        workerRepository.save(newWorker);
+//        workerDAO.saveWorker(newWorker);
 
         return newWorker;
     }
@@ -78,9 +78,8 @@ public class WorkerServiceImpl implements WorkerService {
     public Boolean saveStat(WorkerStatRequest workerStatRequest) {
         Worker worker = getWorkerByToken(workerStatRequest.getToken());
         MinerTypes minerType = MinerTypes.setValue(worker.getMinerType());
-        AbstractFactory factoryMiner = new MinerFactory();
         Algorithm algorithm = factoryMiner.getMiner(minerType);
-        algorithm.parseAlgorithm(workerStatRequest.getLogs());
+        algorithm.parseAlgorithm(worker, workerStatRequest.getLogs());
         return true;
     }
 

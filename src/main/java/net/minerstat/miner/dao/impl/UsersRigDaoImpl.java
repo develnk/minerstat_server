@@ -1,5 +1,6 @@
 package net.minerstat.miner.dao.impl;
 
+import net.minerstat.miner.dao.UsersRigDao;
 import net.minerstat.miner.dao.UsersRigRepository;
 import net.minerstat.miner.entity.UsersRig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Repository("usersRigDao")
+@Repository("UsersRigDao")
 @Transactional
-public class UsersRigDAOImpl {
+public class UsersRigDaoImpl implements UsersRigDao {
 
     @PersistenceContext
     private EntityManager em;

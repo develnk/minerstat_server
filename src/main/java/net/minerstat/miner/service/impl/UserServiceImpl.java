@@ -1,8 +1,8 @@
 package net.minerstat.miner.service.impl;
 
+import net.minerstat.miner.dao.UserDao;
 import net.minerstat.miner.dao.UserRepository;
 import net.minerstat.miner.entity.User;
-import net.minerstat.miner.dao.impl.UserDAOImpl;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
-    private UserDAOImpl userDao;
+    private UserDao userDao;
 
     @Autowired
     private UserRepository userRepository;

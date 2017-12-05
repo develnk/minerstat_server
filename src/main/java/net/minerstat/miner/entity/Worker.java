@@ -33,6 +33,9 @@ public class Worker implements Serializable {
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
     private List<WorkerPools> workerPools = new ArrayList<>();
 
+    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
+    private List<WorkerStatDetailGPU> workerStatDetailGPU  = new ArrayList<>();
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "worker_stat_id")
     @OnDelete(action= OnDeleteAction.CASCADE)
@@ -42,11 +45,6 @@ public class Worker implements Serializable {
     @JoinColumn(name = "worker_stat_detail_id")
     @OnDelete(action= OnDeleteAction.CASCADE)
     private WorkerStatDetail workerStatDetail;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "worker_stat_detail_gpu_id")
-    @OnDelete(action= OnDeleteAction.CASCADE)
-    private WorkerStatDetailGPU workerStatDetailGPU;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_rig_id")
@@ -123,11 +121,11 @@ public class Worker implements Serializable {
         this.usersRig = usersRig;
     }
 
-    public WorkerStatDetailGPU getWorkerStatDetailGPU() {
+    public List<WorkerStatDetailGPU> getWorkerStatDetailGPU() {
         return workerStatDetailGPU;
     }
 
-    public void setWorkerStatDetailGPU(WorkerStatDetailGPU workerStatDetailGPU) {
+    public void setWorkerStatDetailGPU(List<WorkerStatDetailGPU> workerStatDetailGPU) {
         this.workerStatDetailGPU = workerStatDetailGPU;
     }
 }
