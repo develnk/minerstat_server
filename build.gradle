@@ -20,11 +20,11 @@ project.ext {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
-apply plugin: "aspectj.gradle"
-
-group = 'net.minerstat'
-version = '0.0.1-SNAPSHOT'
+apply plugin: 'aspectj.gradle'
+group = 'net.minerstat.miner'
+version = '0.1'
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
 	mavenCentral()

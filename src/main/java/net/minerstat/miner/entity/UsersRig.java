@@ -20,13 +20,9 @@ public class UsersRig {
     private String rigId;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "workers_id")
-    @OnDelete(action= OnDeleteAction.CASCADE)
-    private Worker worker;
-
-    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "uid")
     @OnDelete(action= OnDeleteAction.CASCADE)
+    @JsonIgnore
     private User user;
 
     public UsersRig() {}
@@ -49,10 +45,6 @@ public class UsersRig {
 
     public User getUser() {
         return user;
-    }
-
-    public Worker getWorker() {
-        return worker;
     }
 
     public void setUser(User user) {

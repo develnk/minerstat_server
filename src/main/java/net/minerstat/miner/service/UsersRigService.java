@@ -8,6 +8,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service("UsersRigService")
 public class UsersRigService {
 
@@ -21,14 +23,14 @@ public class UsersRigService {
     private UsersRigDao usersRigDAO;
 
 
-    public UsersRig createUserRig(String email, String password, String rigId) {
+    public UsersRig createUserRig(String email, String password) {
         User user = userService.findByEmail(email);
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(), password)
         );
 
         UsersRig userRig = new UsersRig();
-        userRig.setRigId(rigId);
+        userRig.setRigId(UUID.randomUUID().toString());
         userRig.setUser(user);
         usersRigDAO.insertUsersRig(userRig);
         return userRig;
