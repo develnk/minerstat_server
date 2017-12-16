@@ -28,6 +28,7 @@ import org.springframework.security.web.access.expression.DefaultWebSecurityExpr
 import org.springframework.security.web.access.expression.WebSecurityExpressionRoot;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
@@ -85,6 +86,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     return this.securityService;
   }
 
+  @Bean
+  public HttpSessionEventPublisher httpSessionEventPublisher() {
+    return new HttpSessionEventPublisher();
+  }
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     List<RequestMatcher> csrfMethods = new ArrayList<>();
@@ -107,6 +113,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     // Custom JWT based authentication
     http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
     http.csrf().disable();
+
+    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+    http.sessionManagement().maximumSessions(5);
   }
 
   @Override

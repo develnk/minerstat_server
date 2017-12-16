@@ -16,8 +16,11 @@ public class UsersRig {
     @JsonIgnore
     private Long id;
 
-    @Column(name = "rig_id", length=64, nullable = false, unique=true)
+    @Column(name = "rig_id", length=64, nullable = false, unique = true)
     private String rigId;
+
+    @Column(name = "name", length=512, nullable = true, unique = false)
+    private String name;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "uid")
@@ -49,5 +52,13 @@ public class UsersRig {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

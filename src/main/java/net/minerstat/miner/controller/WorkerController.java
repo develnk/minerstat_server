@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ public class WorkerController {
 
     // Save statistic to DB.
     @RequestMapping(value = "stat", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PreAuthorize("@UP.checkWorkerCredential(#workerStatRequest)")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> statisticToDB(@RequestBody WorkerStatRequest workerStatRequest) throws AuthenticationException {
         Boolean result = workerService.saveStat(workerStatRequest);

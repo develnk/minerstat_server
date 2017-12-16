@@ -48,7 +48,6 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     public Worker newWorker(WorkerRequest workerRequest) {
-        checkUserCredential(workerRequest.getName(), workerRequest.getPassword());
         UsersRig userRig = usersRigDAO.findByRigId(workerRequest.getRigId());
 
         Worker newWorker = new Worker();
@@ -83,13 +82,6 @@ public class WorkerServiceImpl implements WorkerService {
         return true;
     }
 
-    private void checkUserCredential(String userName, String passwd)  throws AuthenticationException {
-        User user = userService.findByEmail(userName);
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), passwd)
-        );
-    }
-
     private User getUserByWorkerToken(String token) throws AuthenticationException {
         User user = workerDAO.getUserByWorkerToken(token);
         if (user == null) {
@@ -99,7 +91,7 @@ public class WorkerServiceImpl implements WorkerService {
         return user;
     }
 
-    private Worker getWorkerByToken(String token) {
+    public Worker getWorkerByToken(String token) {
         Worker worker = workerDAO.getWorkerByToken(token);
         if (worker == null) {
             throw new BadCredentialsException("Invalid Worker Token");

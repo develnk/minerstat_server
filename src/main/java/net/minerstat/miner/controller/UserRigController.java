@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = {"/api/v1/rig"})
 public class UserRigController {
@@ -24,6 +26,14 @@ public class UserRigController {
     public ResponseEntity<?> createWorker(@RequestBody AuthenticationRequest authRequest) throws AuthenticationException {
         UsersRig userRig = usersRigService.createUserRig(authRequest.getName(), authRequest.getPassword());
         return ResponseEntity.ok(userRig);
+    }
+
+    // Get all user rigs.
+    @RequestMapping(value = "all_rigs", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> getUserRigs(@RequestBody AuthenticationRequest authRequest) throws AuthenticationException  {
+        List<UsersRig> usersRigList = usersRigService.getAllUserRigs(authRequest.getName(), authRequest.getPassword());
+        return ResponseEntity.ok(usersRigList);
     }
 
 }

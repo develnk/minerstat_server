@@ -3,6 +3,7 @@ package net.minerstat.miner.security.auth;
 import net.minerstat.miner.security.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
+
 public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
 
   @Value("${net.minerstat.miner.token.header}")
@@ -27,6 +30,8 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
 
   @Autowired
   private UserDetailsService userDetailsService;
+
+  private static final String ANONYMOUS_USER = "Anonymous";
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -42,6 +47,10 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
+    }
+    else if (SecurityContextHolder.getContext().getAuthentication() == null || !SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+      AnonymousAuthenticationToken authentication = new AnonymousAuthenticationToken(ANONYMOUS_USER, ANONYMOUS_USER, createAuthorityList( "ANONYMOUS"));
+      SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     chain.doFilter(request, response);
