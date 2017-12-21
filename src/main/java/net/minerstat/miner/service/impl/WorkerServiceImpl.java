@@ -53,7 +53,6 @@ public class WorkerServiceImpl implements WorkerService {
         Worker newWorker = new Worker();
         newWorker.setUsersRig(userRig);
         newWorker.setWorkerId(UUID.randomUUID().toString());
-        newWorker.setToken(tokenUtils.generateTokenWorker());
         newWorker.setMinerType(workerRequest.getMinerType().value);
         workerDAO.saveWorker(newWorker);
 
@@ -75,30 +74,11 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     public Boolean saveStat(WorkerStatRequest workerStatRequest) {
-        Worker worker = getWorkerByToken(workerStatRequest.getToken());
+        Worker worker = workerDAO.findByWorkerId(workerStatRequest.getWorkerId());
         MinerTypes minerType = MinerTypes.setValue(worker.getMinerType());
         Algorithm algorithm = factoryMiner.getMiner(minerType);
         algorithm.parseAlgorithm(worker, workerStatRequest.getLogs());
         return true;
     }
-
-    private User getUserByWorkerToken(String token) throws AuthenticationException {
-        User user = workerDAO.getUserByWorkerToken(token);
-        if (user == null) {
-            throw new BadCredentialsException("Invalid Worker Token");
-        }
-
-        return user;
-    }
-
-    public Worker getWorkerByToken(String token) {
-        Worker worker = workerDAO.getWorkerByToken(token);
-        if (worker == null) {
-            throw new BadCredentialsException("Invalid Worker Token");
-        }
-
-        return worker;
-    }
-
 
 }

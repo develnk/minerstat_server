@@ -23,9 +23,6 @@ public class Worker implements Serializable {
     @Column(name = "worker_id", length=64, nullable = false, unique=true)
     private String workerId;
 
-    @Column(name = "token", length=64, nullable = false)
-    private String token;
-
     @JsonIgnore
     @Column(name="miner_type", nullable = false)
     private Integer minerType;
@@ -63,14 +60,6 @@ public class Worker implements Serializable {
 
     public void setWorkerId(String workerId) {
         this.workerId = workerId;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public Integer getMinerType() {

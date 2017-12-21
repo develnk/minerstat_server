@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name="role")
-public class Role {
+public class Role implements Serializable {
 
     @Id
     @Column(name="id", nullable=false, insertable=false, updatable=false)

@@ -1,10 +1,8 @@
 package net.minerstat.miner.configuration;
 
-import net.minerstat.miner.security.auth.AuthenticationTokenFilter;
-import net.minerstat.miner.security.auth.EntryPointUnauthorizedHandler;
+import net.minerstat.miner.error.CustomAccessDeniedHandler;
+import net.minerstat.miner.security.auth.*;
 import net.minerstat.miner.security.TokenUtils;
-import net.minerstat.miner.security.auth.RestAuthenticationEntryPoint;
-import net.minerstat.miner.security.auth.TokenAuthenticationFilter;
 import net.minerstat.miner.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,18 +18,24 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.DefaultSecurityFilterChain;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebSecurityExpressionRoot;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,10 +58,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
   @Autowired
+  private CustomAccessDeniedHandler accessDeniedHandler;
+
+//   @Autowired
+//   private MySavedRequestAwareAuthenticationSuccessHandler authenticationSuccessHandler;
+
+  @Autowired
   public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-    authenticationManagerBuilder
-      .userDetailsService(this.userDetailsService)
-        .passwordEncoder(passwordEncoder());
+    authenticationManagerBuilder.userDetailsService(this.userDetailsService).passwordEncoder(passwordEncoder());
   }
 
   @Autowired
@@ -91,31 +99,45 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     return new HttpSessionEventPublisher();
   }
 
+  @Bean
+  public SimpleUrlAuthenticationFailureHandler myFailureHandler() {
+    return new SimpleUrlAuthenticationFailureHandler();
+  }
+
+  public WebSecurityConfiguration() {
+    super();
+    SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+  }
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     List<RequestMatcher> csrfMethods = new ArrayList<>();
     Arrays.asList( "POST", "PUT", "PATCH", "DELETE" )
             .forEach( method -> csrfMethods.add( new AntPathRequestMatcher( "/**", method ) ) );
 
-
     http
-      .sessionManagement().sessionCreationPolicy( SessionCreationPolicy.STATELESS ).and()
-      .exceptionHandling().authenticationEntryPoint( restAuthenticationEntryPoint ).and()
+      .sessionManagement().sessionCreationPolicy( SessionCreationPolicy.STATELESS )
+      .and()
+      .csrf().disable()
+      .authorizeRequests()
+      .and()
+      .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
+      .authenticationEntryPoint(restAuthenticationEntryPoint)
+      .and()
       .authorizeRequests()
       .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-      .antMatchers(HttpMethod.POST, "/api/v1/user").permitAll()
-      .antMatchers("/v1/worker/**").permitAll()
-      .antMatchers("/v1/rig/**").permitAll()
+      .antMatchers(HttpMethod.POST, "/api/v1/user").authenticated()
+      .antMatchers("/v1/worker/**").authenticated()
+      .antMatchers("/v1/rig/**").authenticated()
       .antMatchers( "/v1/user/**").authenticated()
-      .anyRequest().authenticated().and()
-      .addFilterBefore(new TokenAuthenticationFilter(tokenHelper, userDetailsService), BasicAuthenticationFilter.class);
+      .anyRequest()
+      .authenticated()
+      .and()
+      .addFilterBefore(new TokenAuthenticationFilter(tokenHelper, userDetailsService), BasicAuthenticationFilter.class)
+      .logout();
 
     // Custom JWT based authentication
     http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
-    http.csrf().disable();
-
-    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
-    http.sessionManagement().maximumSessions(5);
   }
 
   @Override
@@ -123,9 +145,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     // TokenAuthenticationFilter will ignore the below paths
     web.ignoring().antMatchers(
             HttpMethod.POST,
-            "/api/v1/user/login",
-            "/api/v1/worker/**",
-            "/api/v1/rig/**"
+            "/api/v1/user/login"
     );
     web.ignoring().antMatchers(
             HttpMethod.GET,

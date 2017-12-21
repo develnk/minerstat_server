@@ -48,10 +48,10 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
     }
-    else if (SecurityContextHolder.getContext().getAuthentication() == null || !SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
-      AnonymousAuthenticationToken authentication = new AnonymousAuthenticationToken(ANONYMOUS_USER, ANONYMOUS_USER, createAuthorityList( "ANONYMOUS"));
-      SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
+//    else if (SecurityContextHolder.getContext().getAuthentication() == null || !SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+//      AnonymousAuthenticationToken authentication = new AnonymousAuthenticationToken(ANONYMOUS_USER, ANONYMOUS_USER, createAuthorityList( "ANONYMOUS"));
+//      SecurityContextHolder.getContext().setAuthentication(authentication);
+//    }
 
     chain.doFilter(request, response);
   }

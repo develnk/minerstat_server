@@ -1,8 +1,8 @@
 package net.minerstat.miner.dao;
 
-import java.util.List;
-
 import net.minerstat.miner.entity.User;
+
+import java.util.List;
 
 public interface UserDao {
 

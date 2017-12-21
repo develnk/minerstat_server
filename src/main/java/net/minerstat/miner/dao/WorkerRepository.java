@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface WorkerRepository extends CrudRepository<Worker, Long> {
 
-    @Query("select w from Worker w where token = ?1")
-    Worker findByToken(String token);
+    @Query("select w from Worker w where worker_id = ?1")
+    Worker findByWorkerId(String workerId);
 
 }

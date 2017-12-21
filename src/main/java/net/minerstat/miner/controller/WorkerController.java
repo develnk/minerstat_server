@@ -30,7 +30,7 @@ public class WorkerController {
 
     // Save statistic to DB.
     @RequestMapping(value = "stat", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @PreAuthorize("@UP.checkWorkerCredential(#workerStatRequest)")
+    @PreAuthorize("@UP.uidIsCurrentUserWorker(#workerStatRequest)")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> statisticToDB(@RequestBody WorkerStatRequest workerStatRequest) throws AuthenticationException {
         Boolean result = workerService.saveStat(workerStatRequest);

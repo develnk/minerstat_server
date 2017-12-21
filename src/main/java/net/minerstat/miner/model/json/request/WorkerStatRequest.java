@@ -6,7 +6,7 @@ public class WorkerStatRequest {
 
 	private static final long serialVersionUID = 6624726180748515607L;
 
-	private String token;
+	private String workerId;
 
 	// Json Serialized string.
 	private JSONObject logs;
@@ -22,11 +22,11 @@ public class WorkerStatRequest {
 		this.logs = logs;
 	}
 
-	public String getToken() {
-		return token;
+	public String getWorkerId() {
+		return workerId;
 	}
 
-	public void setToken(String token) {
-		this.token = token;
+	public void setWorkerId(String workerId) {
+		this.workerId = workerId;
 	}
 }

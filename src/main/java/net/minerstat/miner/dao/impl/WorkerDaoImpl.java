@@ -16,17 +16,14 @@ public class WorkerDaoImpl implements WorkerDao {
     @Autowired
     private WorkerRepository workerRepository;
 
-    public Worker getWorkerByToken(String token) {
-        return workerRepository.findByToken(token);
-    }
-
+    @Override
     public Worker saveWorker(Worker worker) {
         return workerRepository.save(worker);
     }
 
-    public User getUserByWorkerToken(String token) {
-        Worker worker = getWorkerByToken(token);
-        return worker.getUsersRig().getUser();
+    @Override
+    public Worker findByWorkerId(String workerId) {
+        return workerRepository.findByWorkerId(workerId);
     }
 
 }

@@ -1,17 +1,16 @@
 package net.minerstat.miner.model.json.request;
 
-import net.minerstat.miner.enums.MinerTypes;
-
-public class UsersRigRequest extends AuthenticationRequest {
+public class UserRigRequest {
 
     private static final long serialVersionUID = 6624726180748515508L;
 
     private String rigId;
 
-    public UsersRigRequest() {}
+    private String rigName;
 
-    public UsersRigRequest(String name, String password, String rigId) {
-        super(name, password);
+    public UserRigRequest() {}
+
+    public UserRigRequest(String rigId) {
         setRigId(rigId);
     }
 
@@ -22,4 +21,13 @@ public class UsersRigRequest extends AuthenticationRequest {
     private void setRigId(String rigId) {
         this.rigId = rigId;
     }
+
+    public String getRigName() {
+        return rigName;
+    }
+
+    public void setRigName(String rigName) {
+        this.rigName = rigName;
+    }
+
 }
