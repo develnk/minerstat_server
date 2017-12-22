@@ -1,12 +1,14 @@
 package net.minerstat.miner.service.impl;
 
 import net.minerstat.miner.dao.RoleDao;
+import net.minerstat.miner.dao.UserRepository;
 import net.minerstat.miner.dao.UsersRigDao;
 import net.minerstat.miner.dao.WorkerDao;
 import net.minerstat.miner.entity.*;
 import net.minerstat.miner.enums.MinerTypes;
 import net.minerstat.miner.model.json.request.WorkerRequest;
 import net.minerstat.miner.model.json.request.WorkerStatRequest;
+import net.minerstat.miner.model.security.SecurityUser;
 import net.minerstat.miner.security.TokenUtils;
 import net.minerstat.miner.service.UserService;
 import net.minerstat.miner.service.WorkerService;
@@ -18,8 +20,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service("WorkerService")
@@ -39,6 +43,9 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Autowired
     private UsersRigDao usersRigDAO;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private WorkerDao workerDAO;
@@ -80,5 +87,13 @@ public class WorkerServiceImpl implements WorkerService {
         algorithm.parseAlgorithm(worker, workerStatRequest.getLogs());
         return true;
     }
+
+    @Override
+    public List<Worker> findUserWorkers() {
+        SecurityUser user = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User realUser = userRepository.findOne(user.getId());
+        return workerDAO.userWorkers(realUser.getUid());
+    }
+
 
 }

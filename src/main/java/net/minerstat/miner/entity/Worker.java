@@ -23,6 +23,9 @@ public class Worker implements Serializable {
     @Column(name = "worker_id", length=64, nullable = false, unique=true)
     private String workerId;
 
+    @Column(name = "worker_name", length=64, nullable = true, unique=false)
+    private String workerName;
+
     @JsonIgnore
     @Column(name="miner_type", nullable = false)
     private Integer minerType;
@@ -116,5 +119,13 @@ public class Worker implements Serializable {
 
     public void setWorkerStatDetailGPU(List<WorkerStatDetailGPU> workerStatDetailGPU) {
         this.workerStatDetailGPU = workerStatDetailGPU;
+    }
+
+    public String getWorkerName() {
+        return workerName;
+    }
+
+    public void setWorkerName(String workerName) {
+        this.workerName = workerName;
     }
 }

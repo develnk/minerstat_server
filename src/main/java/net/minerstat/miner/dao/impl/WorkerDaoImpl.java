@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Repository("workerDao")
 public class WorkerDaoImpl implements WorkerDao {
@@ -24,6 +25,11 @@ public class WorkerDaoImpl implements WorkerDao {
     @Override
     public Worker findByWorkerId(String workerId) {
         return workerRepository.findByWorkerId(workerId);
+    }
+
+    @Override
+    public List<Worker> userWorkers(long uid) {
+        return workerRepository.findAllWorkersUser(uid);
     }
 
 }
