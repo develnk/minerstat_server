@@ -17,7 +17,7 @@ public class AuthenticationRequest {
 		return this.name;
 	}
 
-	private void setName(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
@@ -25,7 +25,7 @@ public class AuthenticationRequest {
 		return this.password;
 	}
 
-	private void setPassword(String password) {
+	public void setPassword(String password) {
 		this.password = password;
 	}
 

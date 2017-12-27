@@ -22,7 +22,7 @@ public class WorkerRequest extends AuthenticationRequest {
         return minerType;
     }
 
-    private void setMinerType(Integer minerType) {
+    public void setMinerType(Integer minerType) {
         this.minerType = MinerTypes.setValue(minerType);
     }
 
