@@ -84,7 +84,7 @@ public class WorkerServiceImpl implements WorkerService {
         Worker worker = workerDAO.findByWorkerId(workerStatRequest.getWorkerId());
         MinerTypes minerType = MinerTypes.setValue(worker.getMinerType());
         Algorithm algorithm = factoryMiner.getMiner(minerType);
-        algorithm.parseAlgorithm(worker, workerStatRequest.getLogs());
+        algorithm.parseAlgorithm(worker, workerStatRequest.getData());
         return true;
     }
 
